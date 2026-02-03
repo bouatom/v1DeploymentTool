@@ -1,0 +1,17 @@
+**/node_modules/
+**/dist/
+**/uploads/
+**/.DS_Store
+**/*.log
+**/.env
+**/.env.*
+**/coverage/
+**/*.out
+**/*.test
+**/*.exe
+**/*.dll
+**/*.so
+**/*.dylib
+**/bin/
+**/.vscode/
+**/.idea/

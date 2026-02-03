@@ -1,0 +1,47 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: deploy
+      POSTGRES_PASSWORD: deploy
+      POSTGRES_DB: deploy
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    environment:
+      DATABASE_URL: postgres://deploy:deploy@postgres:5432/deploy?sslmode=disable
+      APP_HTTP_ADDRESS: ":8080"
+      CREDENTIALS_KEY: "MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY="
+      CREDENTIALS_KEY_ID: "dev"
+      ADMIN_API_KEY: "admin-dev-key"
+      VIEWER_API_KEY: "viewer-dev-key"
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    volumes:
+      - api-uploads:/app/uploads
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+    environment:
+      VITE_API_BASE_URL: "http://localhost:8080"
+      VITE_API_KEY: "admin-dev-key"
+    ports:
+      - "5173:80"
+    depends_on:
+      - api
+
+volumes:
+  postgres-data:
+  api-uploads:
